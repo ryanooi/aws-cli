@@ -1,14 +1,15 @@
-FROM alpine:3.11
-RUN apk -v --update add \
-        python \
-        py-pip \
-        groff \
-        less \
-        mailcap \
-        && \
-    pip install --upgrade awscli==1.14.5 s3cmd==2.0.1 python-magic && \
-    apk -v --purge del py-pip && \
-    rm /var/cache/apk/*
+FROM ubuntu:18.04
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  curl \
+  dnsutils \
+  jq \
+  python3-minimal \
+  python3-pip \
+  python3-setuptools \
+  && pip3 install --no-cache-dir -U awscli \
+  && apt-get clean autoclean \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && rm -rf /var/lib/apt/lists/*
 VOLUME /root/.aws
 VOLUME /project
 WORKDIR /project
